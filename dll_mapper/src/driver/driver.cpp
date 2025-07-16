@@ -49,17 +49,18 @@ namespace Driver {
         return res.addr;
     }
 
-    void create_thread(const PVOID address, const PVOID params) {
-        ThreadResult res{};
+    void create_thread(const PVOID address, const PVOID params) {        
         ThreadRequest req{
             .addr = address,
             .params = params,
         };
 
-        if (!DeviceIoControl(hDevice, IOCTL_CREATE_THREAD_PROCESS, &req, sizeof(ThreadRequest), &res, sizeof(ThreadResult), nullptr, nullptr)) {
+        if (!DeviceIoControl(hDevice, IOCTL_CREATE_THREAD_PROCESS, &req, sizeof(ThreadRequest), nullptr, NULL, nullptr, nullptr)) {
             print_error("ERROR: THREAD_CREATE");
         }
+    }
 
-        std::println("{:X}", cast_ptr(res.addr));
+    void close_handle() {
+        CloseHandle(hDevice);
     }
 }

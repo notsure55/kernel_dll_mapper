@@ -57,10 +57,6 @@ namespace Driver {
 		PVOID params;
 	};
 
-	struct ThreadResult {
-		PVOID addr;
-	};
-
     extern HANDLE hDevice;
 	
 	void init(int pid);
@@ -89,4 +85,5 @@ namespace Driver {
     bool write(PVOID address, const PVOID& buffer, const SIZE_T& size);
     PVOID alloc(const PVOID address, const SIZE_T size);
 	void create_thread(const PVOID address, const PVOID params);
+	void close_handle();
 }

@@ -100,11 +100,10 @@ namespace Requests {
 		return status;
 	}
 
-	NTSTATUS create_thread(const PVOID system_buffer, Driver::ThreadResult* result) {
+	NTSTATUS create_thread(const PVOID system_buffer) {
 
 		auto request{reinterpret_cast<Driver::ThreadRequest*>(system_buffer)};
 
-		// hard coded address for now
 		static ZwCreateThreadEx_t ZwCreateThreadEx{ reinterpret_cast<ZwCreateThreadEx_t>(Scanner::get_ZwCreateThreadEx()) };
 
 		KAPC_STATE stack{};

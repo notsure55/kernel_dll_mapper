@@ -21,5 +21,5 @@ namespace Requests {
 	NTSTATUS write_memory(const PVOID system_buffer, Driver::WriteResult* result);
 	NTSTATUS read_memory(const PVOID system_buffer, Driver::ReadResult* result);
 	NTSTATUS alloc_memory(const PVOID system_buffer, Driver::AllocResult* result);
-	NTSTATUS create_thread(const PVOID system_buffer, Driver::ThreadResult* result);
+	NTSTATUS create_thread(const PVOID system_buffer);
 }

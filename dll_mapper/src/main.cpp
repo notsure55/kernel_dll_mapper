@@ -1,6 +1,5 @@
 #include "driver/driver.hpp"
 #include "memory/memory.hpp"
-#include <winternl.h>
 
 #include <print>
 #include <vector>
@@ -75,16 +74,14 @@ void relocation_stub(Params* params) {
 	const auto reloc_dir{ nt_header->OptionalHeader.DataDirectory[5] };
 	const auto* reloc_entries{ reinterpret_cast<IMAGE_BASE_RELOCATION*>(cast_ptr(params->base_address) + reloc_dir.VirtualAddress) };
 
-    #pragma pack(push, 1)
 	struct BASE_RELOCATION_BLOCK {
 		WORD Offset : 12;
 		WORD Type : 4;
 	};
-    #pragma pack(pop)
 
-	while (reloc_entries->VirtualAddress != 0) {
+	while (reloc_entries->VirtualAddress != 0 && reloc_entries->SizeOfBlock != 0) {
 		const auto block_count{ (reloc_entries->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD) };
-		auto block{ reinterpret_cast<BASE_RELOCATION_BLOCK*>(cast_ptr(reloc_entries) + 1) };
+		auto block{ reinterpret_cast<BASE_RELOCATION_BLOCK*>(cast_ptr(reloc_entries) + 8) };
 
 		for (size_t i{ 0 }; i < block_count; ++i, ++block) {
 			if (block->Type == IMAGE_REL_BASED_DIR64) {
@@ -107,7 +104,7 @@ void relocation_stub(Params* params) {
 	// loop through all modules and import all functions
 	for (size_t i{0}; ies[i].Characteristics != 0; ++i) {
 		const auto import_des = ies[i];
-		const auto module_handle{ params->load_library(rva_to_ptr(char*, params->base_address, import_des.Name)) };
+		const auto module_handle{ params->load_library(rva_to_ptr(const char*, params->base_address, import_des.Name)) };
 
 		auto* address_table_entry{ rva_to_ptr(IMAGE_THUNK_DATA*, params->base_address, import_des.FirstThunk) };
 		auto* name_table_entry{ rva_to_ptr(IMAGE_THUNK_DATA*, params->base_address, import_des.OriginalFirstThunk) };
@@ -129,11 +126,11 @@ void relocation_stub(Params* params) {
 			// if ordinal call proc address by ordinal instead of name
 			if (is_ordinal) {
 				auto ordinal = IMAGE_ORDINAL(name_table_entry->u1.Ordinal);
-				address_table_entry->u1.Function = reinterpret_cast<DWORD_PTR>(
+				address_table_entry->u1.Function = reinterpret_cast<ULONGLONG>(
 					params->get_proc_address(module_handle, reinterpret_cast<const char*>(ordinal)));
 			}
 			else {
-				address_table_entry->u1.Function = reinterpret_cast<DWORD_PTR>(
+				address_table_entry->u1.Function = reinterpret_cast<ULONGLONG>(
 					params->get_proc_address(module_handle, imported_fnc->Name));
 			}
 		}
@@ -207,19 +204,14 @@ T get_remote_func_address(const std::string module_name,
 	return reinterpret_cast<T>(remote_module.modBaseAddr + func_offset);
 }
 
-// 
 int main(int argc, const char* argv[]) {
-	//const std::string dll_path{"C:\\Users\\schwarztoter\\source\\repos\\test_dll\\x64\\Release\\test_dll.dll"};
-	const auto pid{ atoi(argv[1]) };
-	const std::string dll_path{ argv[2] };
+	const std::string dll_path{ "C:\\Users\\schwarztoter\\source\\repos\\kernel_dll_mapper\\x64\\Release\\dayz_cheat.dll" };
 	const auto bytes{ read_dll_bytes(dll_path) };
 
-	//const auto pid{ Memory::get_pid("cs2.exe") };
+	const auto pid{ Memory::get_pid("DayZ_x64.exe") };
 	Driver::init(pid);
-	const auto p_handle{ OpenProcess(PROCESS_ALL_ACCESS, false, pid) };
 
 	auto* const base_address{ write_bytes_to_process(bytes) };
-	std::println("base_address: {:X}", cast_ptr(base_address));
 
 	const Params params = {
 		.base_address = base_address,
@@ -228,22 +220,12 @@ int main(int argc, const char* argv[]) {
 	};
 
 	const auto reloc_info{ write_reloc_stub(params) };
-	//  0x00c9 
-	/*CreateRemoteThreadEx(
-	p_handle,
-	nullptr,
-	0,
-	reinterpret_cast<LPTHREAD_START_ROUTINE>(reloc_info.first),
-	reloc_info.second,
-	0,
-	nullptr,
-	nullptr
-	);*/
 	
 	Driver::create_thread(reloc_info.first, reloc_info.second);
-
+	Driver::close_handle();
 
 	std::println("Injected!");
 	Sleep(5000);
 	return 0;
+
 }

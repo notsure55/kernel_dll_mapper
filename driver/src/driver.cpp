@@ -135,13 +135,7 @@ NTSTATUS OnDeviceControl(PDEVICE_OBJECT, PIRP Irp)
         break;
     }
     case IOCTL_CREATE_THREAD_PROCESS: {
-        Driver::ThreadResult res{};
-        status = Requests::create_thread(Irp->AssociatedIrp.SystemBuffer, &res);
-
-        if (NT_SUCCESS(status)) {
-            memcpy(Irp->AssociatedIrp.SystemBuffer, &res, sizeof(Driver::ThreadResult));
-            Irp->IoStatus.Information = sizeof(Driver::ThreadResult);
-        }
+        status = Requests::create_thread(Irp->AssociatedIrp.SystemBuffer);
         break;
     }
     }
