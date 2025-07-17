@@ -9,7 +9,7 @@
 using std::println;
 
 #define print_ptr(ptr) println("{:s} = {:X}", #ptr, reinterpret_cast<DWORD_PTR>(ptr));
-#define ptr_to_string(ptr) reinterpret_cast<DWORD_PTR>(ptr)
+#define cast_ptr(ptr) reinterpret_cast<DWORD_PTR>(ptr)
 
 void setup() {
     Scanner::cache();
@@ -34,6 +34,7 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
     print_ptr(world);
 
     while (!GetAsyncKeyState(VK_DELETE)) {
+        world->print_entities();
         Sleep(1000);
     }
     
