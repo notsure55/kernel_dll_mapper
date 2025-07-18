@@ -37,17 +37,13 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
 
     while (!GetAsyncKeyState(VK_DELETE)) {
         //Globals::world->print_entities();
-        for (const auto entity : Globals::world->get_entities()) {
-            glm::vec3 new_pos{};
-            Enfusion::get_screen_pos(0x00007FF68CE2B020, &new_pos.x, &entity->vis_state->pos.x);
-
-            std::println("X:{} Y:{}", new_pos.x, new_pos.y);
+        for (const auto entity : Globals::world->get_items()) {
 
             if (strcmp(entity->cls->name, "SurvivorBase") == 0) {
             }
             else {
-                const auto type{ Enfusion::GetDayZInfectedType_t(entity) };
-                println("NAME:{}, ADDRESS:{:X}, TYPE:{:X}", entity->cls->name, cast_ptr(entity), cast_ptr(type));
+                println("NAME:{}, ADDRESS:{:X} TYPE: {} POS: X {}",
+                    entity->cls->name, cast_ptr(entity), entity->get_type(), entity->get_pos().x);
             }
         }
         Sleep(1000);

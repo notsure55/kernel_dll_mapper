@@ -5,6 +5,7 @@
 #include <vector>
 #include <print>
 #include "../utility/utility.hpp"
+#include "../offsets/offsets.hpp"
 
 class EntityVisualState {
 public:
@@ -18,13 +19,33 @@ public:
     char* name;
 };
 
+class EntityType {
+public:
+    byte padding[0x88];
+    void* heap;
+};
+
 class Entity {
 public:
     byte padding[0x8];
-    EntityClass* cls;
-    byte padding1[0x1B8];
-    EntityVisualState* vis_state;
+    EntityClass* cls; // 0x8
+    byte padding2[0x170];
+    EntityType* type; // 0x180
+    byte padding1[0x48];
+    EntityVisualState* vis_state; // 0x1C8
     // 1D0
+
+    const char* get_type() const {
+        const auto type{ reinterpret_cast<const char*>(cast_ptr(this->type->heap) + 0x10) };
+        return type;
+    }
+
+    glm::vec3& get_pos() const {
+        auto& pos{ *reinterpret_cast<glm::vec3*>(*reinterpret_cast<DWORD_PTR*>(
+            cast_ptr(this) + Offsets::Entity::VIS_STATE) + Offsets::Entity::VIS_STATE_POS) };
+
+        return pos;
+    }
 };
 
 struct Mat4x4 {
@@ -63,9 +84,12 @@ public:
                 const auto entity_value{ *reinterpret_cast<ULONGLONG*>(start + 0x4 * count + 0x8) };
                 if (entity_value != NULL && entity_value > 0x10000 && entity_value < 0xFFFFFFFFF) {
                     const auto item{ *reinterpret_cast<Entity**>(start + 0x4 * count + 0x8) };
+
                     if (item == nullptr) { count++; continue; };
                     if (item->cls == nullptr) { count++;  continue; };
                     if (item->cls->name == nullptr) { count++; continue;  };
+                    if (item->get_type() == nullptr) { count++; continue; };
+
                     items.push_back(item);
                     count += 5;
                 }
@@ -85,6 +109,7 @@ public:
             if (this->entity_list[i] == nullptr) continue;
             if (this->entity_list[i]->cls == nullptr) continue;
             if (this->entity_list[i]->cls->name == nullptr) continue;
+            if (this->entity_list[i]->get_type() == nullptr) continue;
             entities.push_back(this->entity_list[i]);
         }
 
@@ -92,13 +117,12 @@ public:
     }
 
     std::vector<Entity*> get_all_entities() {
-        const auto entities{ this->get_entities() };
+        auto entities{ this->get_entities() };
         const auto items{ this->get_items() };
 
-        std::vector<Entity*> combined = entities;
-        combined.insert(combined.end(), items.begin(), items.end());
+        entities.insert(entities.end(), items.begin(), items.end());
 
-        return combined;
+        return entities;
     }
 
     void print_entities() {
@@ -114,9 +138,5 @@ public:
             }
             std::println("{}", ent->cls->name);
         }
-    }
-
-    Mat4x4& get_view_matrix() {
-        return this->camera->view_matrix;
     }
 };

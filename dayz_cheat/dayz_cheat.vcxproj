@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\offsets\offsets.cpp" />
     <ClCompile Include="src\globals\globals.cpp" />
     <ClCompile Include="src\features\esp\esp.cpp" />
     <ClCompile Include="src\enfusion\enfusion.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="vcpkg_installed\x64-windows\x64-windows\include\glm\glm.cppm" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\offsets\offsets.hpp" />
     <ClInclude Include="src\globals\globals.hpp" />
     <ClInclude Include="src\features\esp\esp.hpp" />
     <ClInclude Include="src\enfusion\enfusion.hpp" />
