@@ -36,6 +36,9 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
     setup();
 
     while (!GetAsyncKeyState(VK_DELETE)) {
+        for (const auto entity : Globals::world->get_entities()) {        
+            print_ptr(entity);
+        }
         Sleep(1000);
     }
     

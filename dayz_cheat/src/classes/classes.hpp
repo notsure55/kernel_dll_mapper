@@ -7,6 +7,15 @@
 #include "../utility/utility.hpp"
 #include "../offsets/offsets.hpp"
 
+class AnimationSystem {
+};
+
+class AnimCore {
+public:
+    byte padding[0x8];
+    AnimationSystem* anim_system;
+};
+
 class EntityVisualState {
 public:
     byte padding[0x2C];
@@ -165,7 +174,7 @@ public:
         for (const auto ent : entities) {
             if (strcmp(ent->cls->name, "SurvivorBase") == 0) {
             }
-            std::println("{}", ent->cls->name);
+            std::println("{:X}", cast_ptr(ent));
         }
     }
 };

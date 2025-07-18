@@ -4,9 +4,10 @@
 
 namespace Globals {
 	World* world{ nullptr };
+	AnimCore* anim{ nullptr };
 
 	void cache() {
 		world = *Scanner::get<World**>("world");
-		print_ptr(world);
+		anim = *Scanner::get<AnimCore**>("anim");
 	}
 }

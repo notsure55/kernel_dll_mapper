@@ -3,6 +3,7 @@
 
 namespace Globals {
 	extern World* world;
+	extern AnimCore* anim;
 
 	void cache();
 }
