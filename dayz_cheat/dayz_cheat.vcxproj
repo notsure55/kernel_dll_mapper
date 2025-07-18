@@ -71,8 +71,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Users\schwarztoter\source\repos\kernel_dll_mapper\dayz_cheat\src\ui\ImGui;C:\Users\schwarztoter\source\repos\kernel_dll_mapper\dayz_cheat\src\ui\Minhook;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -139,18 +145,51 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\globals\globals.cpp" />
+    <ClCompile Include="src\features\esp\esp.cpp" />
+    <ClCompile Include="src\enfusion\enfusion.cpp" />
     <ClCompile Include="src\classes\classes.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\hooks\hooks.cpp" />
+    <ClCompile Include="src\hooks\present\present.cpp" />
     <ClCompile Include="src\sig_scanner\sig_scanner.cpp" />
+    <ClCompile Include="src\ui\ImGui\imgui.cpp" />
+    <ClCompile Include="src\ui\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="src\ui\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\ui\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="src\ui\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\ui\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\ui\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="src\ui\menu\menu.cpp" />
+    <ClCompile Include="src\toggles\toggles.cpp" />
+    <ClCompile Include="src\utility\utility.cpp" />
     <ClCompile Include="vcpkg_installed\x64-windows\x64-windows\include\glm\detail\glm.cpp" />
     <ClCompile Include="vcpkg_installed\x64-windows\x64-windows\include\glm\glm.cppm" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\globals\globals.hpp" />
+    <ClInclude Include="src\features\esp\esp.hpp" />
+    <ClInclude Include="src\enfusion\enfusion.hpp" />
     <ClInclude Include="src\classes\classes.hpp" />
+    <ClInclude Include="src\hooks\hooks.hpp" />
+    <ClInclude Include="src\hooks\present\present.hpp" />
     <ClInclude Include="src\sig_scanner\sig_scanner.hpp" />
+    <ClInclude Include="src\ui\ImGui\imconfig.h" />
+    <ClInclude Include="src\ui\ImGui\imgui.h" />
+    <ClInclude Include="src\ui\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="src\ui\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="src\ui\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\ui\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="src\ui\ImGui\imstb_textedit.h" />
+    <ClInclude Include="src\ui\ImGui\imstb_truetype.h" />
+    <ClInclude Include="src\ui\menu\menu.hpp" />
+    <ClInclude Include="src\ui\Minhook\MinHook.h" />
+    <ClInclude Include="src\toggles\toggles.hpp" />
+    <ClInclude Include="src\utility\utility.hpp" />
     <ClInclude Include="vcpkg_installed\x64-windows\x64-windows\include\glm\common.hpp" />
     <ClInclude Include="vcpkg_installed\x64-windows\x64-windows\include\glm\detail\compute_common.hpp" />
     <ClInclude Include="vcpkg_installed\x64-windows\x64-windows\include\glm\detail\compute_vector_decl.hpp" />

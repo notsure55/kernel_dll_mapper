@@ -4,6 +4,7 @@
 #include <glm/vec3.hpp>
 #include <vector>
 #include <print>
+#include "../utility/utility.hpp"
 
 class EntityVisualState {
 public:
@@ -32,20 +33,19 @@ struct Mat4x4 {
 
 class Camera {
 public:
-    byte padding[0x1C8];
+    byte padding[0x8];
     Mat4x4 view_matrix;
 };
 
 class Player {
 public:
-
-    byte padding[0x25F8];
-    Mat4x4 matrix;
 };
 
 class World {
 public:
-    byte padding[0xF48];
+    byte padding3[0x1B8];
+    Camera* camera;
+    byte padding[0xD88];
     Entity** entity_list;
     int entity_count;
     byte padding1[0x110C];
@@ -62,7 +62,11 @@ public:
             if (in_render == 1) {
                 const auto entity_value{ *reinterpret_cast<ULONGLONG*>(start + 0x4 * count + 0x8) };
                 if (entity_value != NULL && entity_value > 0x10000 && entity_value < 0xFFFFFFFFF) {
-                    items.push_back(*reinterpret_cast<Entity**>(start + 0x4 * count + 0x8));
+                    const auto item{ *reinterpret_cast<Entity**>(start + 0x4 * count + 0x8) };
+                    if (item == nullptr) { count++; continue; };
+                    if (item->cls == nullptr) { count++;  continue; };
+                    if (item->cls->name == nullptr) { count++; continue;  };
+                    items.push_back(item);
                     count += 5;
                 }
             }
@@ -78,10 +82,23 @@ public:
     std::vector<Entity*> get_entities() {
         std::vector<Entity*> entities;
         for (size_t i{ 0 }; i < this->entity_count; ++i) {
+            if (this->entity_list[i] == nullptr) continue;
+            if (this->entity_list[i]->cls == nullptr) continue;
+            if (this->entity_list[i]->cls->name == nullptr) continue;
             entities.push_back(this->entity_list[i]);
         }
 
         return entities;
+    }
+
+    std::vector<Entity*> get_all_entities() {
+        const auto entities{ this->get_entities() };
+        const auto items{ this->get_items() };
+
+        std::vector<Entity*> combined = entities;
+        combined.insert(combined.end(), items.begin(), items.end());
+
+        return combined;
     }
 
     void print_entities() {
@@ -89,30 +106,17 @@ public:
         const auto entities{ this->get_entities() };
         std::println("**** ITEMS ****");
         for (const auto item : items) {
-            if (item == nullptr) continue;
-            if (item->cls == nullptr) continue;
-            if (item->cls->name == nullptr) continue;
-
             std::println("{}", item->cls->name);
         }
         std::println("**** DYNAMIC ENTITIES ****");
         for (const auto ent : entities) {
-            if (ent == nullptr) continue;
-            if (ent->cls == nullptr) continue;
-            if (ent->cls->name == nullptr) continue;
-
             if (strcmp(ent->cls->name, "SurvivorBase") == 0) {
-                const auto player{ reinterpret_cast<Player*>(ent) };
-
-                for (size_t i{ 0 }; i < 4; ++i) {
-                    for (size_t j{ 0 }; j < 4; ++j) {
-                        std::print("{} ", player->matrix.v[i][j]);
-                    }
-                }
-                std::println();
             }
-
             std::println("{}", ent->cls->name);
         }
+    }
+
+    Mat4x4& get_view_matrix() {
+        return this->camera->view_matrix;
     }
 };
