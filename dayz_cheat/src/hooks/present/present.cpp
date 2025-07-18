@@ -9,7 +9,7 @@
 #include <Minhook.h>
 #include "../../ui/menu/menu.hpp"
 #include <print>
-#include "../../toggles/toggles.hpp"
+#include "../../ui/toggles/toggles.hpp"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

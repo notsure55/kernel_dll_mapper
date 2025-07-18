@@ -2,7 +2,7 @@
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
-#include "../../toggles/toggles.hpp"
+#include "../toggles/toggles.hpp"
 #include "../../features/esp/esp.hpp"
 
 namespace Menu {
@@ -10,7 +10,11 @@ namespace Menu {
     void menu() {
         ImGui::Begin("Black");
         if (ImGui::BeginTabBar("Modules")) {
-            if (ImGui::BeginTabItem("Aimbot")) {
+            if (ImGui::BeginTabItem("Esp")) {
+                ImGui::Checkbox("Weapons", &Toggles::Esp::weapons);
+                ImGui::Checkbox("Gear", &Toggles::Esp::gear);
+                ImGui::Checkbox("Clothing", &Toggles::Esp::clothing);
+                ImGui::Checkbox("Default", &Toggles::Esp::def);
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

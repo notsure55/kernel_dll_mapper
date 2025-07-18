@@ -166,7 +166,7 @@
     <ClCompile Include="src\ui\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\ui\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\ui\menu\menu.cpp" />
-    <ClCompile Include="src\toggles\toggles.cpp" />
+    <ClCompile Include="src\ui\toggles\toggles.cpp" />
     <ClCompile Include="src\utility\utility.cpp" />
     <ClCompile Include="vcpkg_installed\x64-windows\x64-windows\include\glm\detail\glm.cpp" />
     <ClCompile Include="vcpkg_installed\x64-windows\x64-windows\include\glm\glm.cppm" />
@@ -190,7 +190,7 @@
     <ClInclude Include="src\ui\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\ui\menu\menu.hpp" />
     <ClInclude Include="src\ui\Minhook\MinHook.h" />
-    <ClInclude Include="src\toggles\toggles.hpp" />
+    <ClInclude Include="src\ui\toggles\toggles.hpp" />
     <ClInclude Include="src\utility\utility.hpp" />
     <ClInclude Include="vcpkg_installed\x64-windows\x64-windows\include\glm\common.hpp" />
     <ClInclude Include="vcpkg_installed\x64-windows\x64-windows\include\glm\detail\compute_common.hpp" />

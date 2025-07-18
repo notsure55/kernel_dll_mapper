@@ -25,6 +25,17 @@ public:
     void* heap;
 };
 
+// "gear" "characters" "weapons"
+enum Type : UINT32 {
+    GEAR = 1, // gear
+    CLOTHING = 2, // chararcter
+    WEAPONS = 3, // weapons
+    DEFAULT = 4,
+
+
+    INVALID = 999,
+};
+
 class Entity {
 public:
     byte padding[0x8];
@@ -35,9 +46,25 @@ public:
     EntityVisualState* vis_state; // 0x1C8
     // 1D0
 
-    const char* get_type() const {
+    Type get_type() const {
         const auto type{ reinterpret_cast<const char*>(cast_ptr(this->type->heap) + 0x10) };
-        return type;
+
+        if (type == nullptr) {
+            return Type::INVALID;
+        }
+
+        if (strstr(type,"gear") != nullptr) {
+            return Type::GEAR;
+        }
+        else if (strstr(type, "characters") != nullptr) {
+            return Type::CLOTHING;
+        }
+        else if (strstr(type, "weapons") != nullptr) {
+            return Type::WEAPONS;
+        }
+        else {
+            return Type::DEFAULT;
+        }
     }
 
     glm::vec3& get_pos() const {
@@ -88,7 +115,7 @@ public:
                     if (item == nullptr) { count++; continue; };
                     if (item->cls == nullptr) { count++;  continue; };
                     if (item->cls->name == nullptr) { count++; continue;  };
-                    if (item->get_type() == nullptr) { count++; continue; };
+                    if (item->get_type() == Type::INVALID) { count++; continue; };
 
                     items.push_back(item);
                     count += 5;
@@ -109,12 +136,14 @@ public:
             if (this->entity_list[i] == nullptr) continue;
             if (this->entity_list[i]->cls == nullptr) continue;
             if (this->entity_list[i]->cls->name == nullptr) continue;
-            if (this->entity_list[i]->get_type() == nullptr) continue;
+            if (this->entity_list[i]->get_type() == Type::INVALID) continue;
             entities.push_back(this->entity_list[i]);
         }
 
         return entities;
     }
+
+    
 
     std::vector<Entity*> get_all_entities() {
         auto entities{ this->get_entities() };

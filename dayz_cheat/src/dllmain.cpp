@@ -36,16 +36,6 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
     setup();
 
     while (!GetAsyncKeyState(VK_DELETE)) {
-        //Globals::world->print_entities();
-        for (const auto entity : Globals::world->get_items()) {
-
-            if (strcmp(entity->cls->name, "SurvivorBase") == 0) {
-            }
-            else {
-                println("NAME:{}, ADDRESS:{:X} TYPE: {} POS: X {}",
-                    entity->cls->name, cast_ptr(entity), entity->get_type(), entity->get_pos().x);
-            }
-        }
         Sleep(1000);
     }
     
