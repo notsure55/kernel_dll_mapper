@@ -5,6 +5,7 @@
 namespace Globals {
 	World* world{ nullptr };
 	AnimCore* anim{ nullptr };
+	Entity* local_player{ nullptr };
 
 	void cache() {
 		world = *Scanner::get<World**>("world");

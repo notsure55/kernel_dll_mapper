@@ -9,6 +9,7 @@
 #include "enfusion/enfusion.hpp"
 #include "utility/utility.hpp"
 #include "globals/globals.hpp"
+#include "features/aimbot/aimbot.hpp"
 
 using std::println;
 
@@ -35,11 +36,11 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
 
     setup();
 
-    while (!GetAsyncKeyState(VK_DELETE)) {
-        for (const auto entity : Globals::world->get_entities()) {        
-            print_ptr(entity);
+
+    while (!GetAsyncKeyState(VK_DELETE)) { 
+        if (GetAsyncKeyState(VK_XBUTTON2)) {
+            Aimbot::run();
         }
-        Sleep(1000);
     }
     
     cleanup(hModule, f);

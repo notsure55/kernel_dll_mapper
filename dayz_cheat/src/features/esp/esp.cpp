@@ -25,12 +25,12 @@ namespace Esp {
         Enfusion::get_bone_pos(entity, index, &pos.x);
 
         glm::vec3 new_pos{};
-        Enfusion::get_screen_pos(NULL, &new_pos.x, &pos.x);
-        if (new_pos.x == 0 || new_pos.y == 0 || new_pos.z < 0.001) {
-            return ImVec2(0.0, 0.0);
+        if (!Enfusion::get_screen_pos(NULL, &new_pos.x, &pos.x)) {
+            return ImVec2(0.0f, 0.0f);
         }
-
-        return ImVec2(new_pos.x, new_pos.y);
+        else {
+            return ImVec2(new_pos.x, new_pos.y);
+        }
     }
 
     void skeletons() {
@@ -81,15 +81,12 @@ namespace Esp {
             if (!check_type(entity->get_type())) { continue; };
 
 			glm::vec3 new_pos{};
-            Enfusion::get_screen_pos(NULL, &new_pos.x, &entity->get_pos().x);
-            if (new_pos.x == 0 || new_pos.y == 0 || new_pos.z < 0.001) {
+            if (!Enfusion::get_screen_pos(NULL, &new_pos.x, &entity->get_pos().x)) {
                 continue;
             }
 
-            ImVec2 vec{ ImVec2(new_pos.x, new_pos.y) };
-
 			ImGui::GetBackgroundDrawList()->AddText(
-				vec,
+                ImVec2(new_pos.x, new_pos.y),
 				IM_COL32(255, 0, 0, 255),
 				entity->cls->name
 			);

@@ -16,8 +16,8 @@ namespace Enfusion {
 	using GetDayZInfectedType_t = ULONGLONG * (*)(Entity*);
 	ULONGLONG* get_dayz_infected_type(Entity* infected);
 
-	using GetScreenPos_t = float* (__fastcall*)(ULONGLONG, float*, float*);
-	float* get_screen_pos(ULONGLONG idk, float* out, float* in);
+	using GetScreenPos_t = bool (__fastcall*)(ULONGLONG, float*, float*);
+	bool get_screen_pos(ULONGLONG idk, float* out, float* in);
 
 	using GetBoneIndex_t = ULONGLONG * (*)(Entity*);
 	ULONGLONG* get_bone_object(Entity* entity);
@@ -33,4 +33,16 @@ namespace Enfusion {
 
 	using GetBoneIndexByName_t = int(*)(AnimationSystem*, const char*);
 	int get_bone_index_by_name(AnimationSystem* anim_sys, const char* bone_name);
+
+	using LookAt_t = void(*)(Entity*, float*);
+	void look_at(Entity* entity, float* in);
+
+	using GetCameraObject_t = CameraObject * (*)(void);
+	CameraObject* get_camera_object();
+
+	using GetLocalYawPitchRoll_t = float* (*)(float*, StaticCamera*);
+	glm::vec3 get_yaw_pitch_roll(float* out, StaticCamera* static_camera);
+
+	using SetAngles_t = void (*)(StaticCamera*, float*);
+	void set_angles(StaticCamera* camera, float* angles);
 }
