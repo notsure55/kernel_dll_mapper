@@ -6,16 +6,17 @@ std::vector<Entity*> World::get_items() {
     std::vector<Entity*> items;
     const auto start{ reinterpret_cast<DWORD_PTR>(this->item_list) };
     size_t count{ 0 };
-    while (this->item_count != items.size()) {
+    while (static_cast<size_t>(this->item_count - 2) > items.size()) {
         const auto in_render{ *reinterpret_cast<int*>(start + 0x4 * count) };
         if (in_render == 1) {
             const auto entity_value{ *reinterpret_cast<ULONGLONG*>(start + 0x4 * count + 0x8) };
             if (entity_value != NULL && entity_value > 0x10000 && entity_value < 0xFFFFFFFFF) {
-                const auto item{ *reinterpret_cast<Entity**>(start + 0x4 * count + 0x8) };
+                const auto item{ reinterpret_cast<Entity*>(entity_value) };
 
                 if (item == nullptr) { count++; continue; };
                 if (item->cls == nullptr) { count++;  continue; };
                 if (item->cls->name == nullptr) { count++; continue; };
+                if (strlen(item->cls->name) < 3) { count++; continue; }
                 if (item->get_type() == Type::INVALID) { count++; continue; };
 
                 items.push_back(item);
@@ -25,6 +26,7 @@ std::vector<Entity*> World::get_items() {
         else if (in_render == 2) {
             // not in render
         }
+        if (count > 1500) { break; }
         count++;
     }
 
@@ -49,8 +51,6 @@ std::vector<Entity*> World::get_entities() {
     return entities;
 }
 
-
-
 std::vector<Entity*> World::get_all_entities() {
     auto entities{ this->get_entities() };
     const auto items{ this->get_items() };
@@ -65,13 +65,13 @@ void World::print_entities() {
     const auto entities{ this->get_entities() };
     std::println("**** ITEMS ****");
     for (const auto item : items) {
-        std::println("{}", item->cls->name);
+        std::println("{:X}, {}", cast_ptr(item), item->cls->name);
     }
     std::println("**** DYNAMIC ENTITIES ****");
     for (const auto ent : entities) {
         if (strcmp(ent->cls->name, "SurvivorBase") == 0) {
         }
-        std::println("{:X}", cast_ptr(ent));
+        std::println("{:X}, {}", cast_ptr(ent), ent->cls->name);
     }
 }
 
