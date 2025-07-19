@@ -48,7 +48,7 @@ namespace Enfusion {
 
 	bool get_screen_pos(ULONGLONG idk, float* out, float* in) {
 		GetScreenPos_p(idk, out, in);
-		if (out[0] == 0.0f && out[1] == 0.0f || out[2] < 0.001) {
+		if ((UINT32)(out[0]) == 0 && (UINT32)(out[1]) == 0 || out[2] < 0.001f) {
 			return false;
 		}
 		else {

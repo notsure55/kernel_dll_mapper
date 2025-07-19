@@ -36,11 +36,11 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
 
     setup();
 
-
-    while (!GetAsyncKeyState(VK_DELETE)) { 
+    while (!GetAsyncKeyState(VK_DELETE)) {
         if (GetAsyncKeyState(VK_XBUTTON2)) {
             Aimbot::run();
         }
+        Sleep(5);
     }
     
     cleanup(hModule, f);

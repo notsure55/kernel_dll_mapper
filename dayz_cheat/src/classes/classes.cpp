@@ -1,34 +1,38 @@
 #include "classes.hpp"
 #include "../globals/globals.hpp"
 #include "../enfusion/enfusion.hpp"
+#include "../ui/toggles/toggles.hpp"
 
 std::vector<Entity*> World::get_items() {
+    std::println("START");
     std::vector<Entity*> items;
     const auto start{ reinterpret_cast<DWORD_PTR>(this->item_list) };
     size_t count{ 0 };
-    while (static_cast<size_t>(this->item_count - 2) > items.size()) {
-        const auto in_render{ *reinterpret_cast<int*>(start + 0x4 * count) };
-        if (in_render == 1) {
+    const size_t size = this->item_count - 1;
+    do {
+        const auto in_render{ *reinterpret_cast<UINT8*>(start + 0x4 * count) };
+        if (in_render == (UINT8)1) {
             const auto entity_value{ *reinterpret_cast<ULONGLONG*>(start + 0x4 * count + 0x8) };
-            if (entity_value != NULL && entity_value > 0x10000 && entity_value < 0xFFFFFFFFF) {
+            std::print("{:X} {} VALUE: {:X} ", start + 0x4 * count + 0x8, items.size(), entity_value);
+            if (entity_value != NULL && entity_value > 0x1FFFFFFFF && entity_value < 0xFFFFFFFFF) {
                 const auto item{ reinterpret_cast<Entity*>(entity_value) };
-
                 if (item == nullptr) { count++; continue; };
                 if (item->cls == nullptr) { count++;  continue; };
                 if (item->cls->name == nullptr) { count++; continue; };
-                if (strlen(item->cls->name) < 3) { count++; continue; }
                 if (item->get_type() == Type::INVALID) { count++; continue; };
 
                 items.push_back(item);
                 count += 5;
             }
+            std::println();
         }
-        else if (in_render == 2) {
+        else if (in_render == (UINT8)2) {
             // not in render
         }
-        if (count > 1500) { break; }
+        else {
+        }
         count++;
-    }
+    } while (size > items.size());
 
     return items;
 }
@@ -91,6 +95,9 @@ Type Entity::get_type() const {
     else if (strstr(type, "weapons") != nullptr) {
         return Type::WEAPONS;
     }
+    else if (strstr(type, "animals") != nullptr) {
+        return Type::ANIMAL;
+    }
     else {
         return Type::DEFAULT;
     }
@@ -112,4 +119,30 @@ glm::vec3 Entity::get_bone_pos(const char* name) {
     Enfusion::get_bone_pos(this, index, &pos.x);
 
     return pos;
+}
+
+bool Entity::check_type() {
+
+    const auto type{ this->get_type() };
+
+    if (!Toggles::Esp::clothing && type == Type::CLOTHING) {
+        return false;
+    }
+    if (!Toggles::Esp::gear && type == Type::GEAR) {
+        return false;
+    }
+    if (!Toggles::Esp::weapons && type == Type::WEAPONS) {
+        return false;
+    }
+    if (!Toggles::Esp::def && type == Type::DEFAULT) {
+        return false;
+    }
+    if (type == Type::INVALID) {
+        return false;
+    }
+    if (type == Type::ANIMAL) {
+        return false;
+    }
+
+    return true;
 }

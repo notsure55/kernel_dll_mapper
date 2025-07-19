@@ -40,7 +40,7 @@ enum Type : UINT32 {
     CLOTHING = 2, // chararcter
     WEAPONS = 3, // weapons
     DEFAULT = 4,
-
+    ANIMAL = 5, // animals
 
     INVALID = 999,
 };
@@ -56,6 +56,8 @@ public:
     // 1D0
 
     Type get_type() const;
+
+    bool check_type();
 
     glm::vec3& get_pos() const;
 

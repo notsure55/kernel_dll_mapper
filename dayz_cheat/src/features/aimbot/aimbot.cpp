@@ -16,8 +16,6 @@ namespace Aimbot {
 	void run() {
 		glm::vec3 closest_pos{};
 		float closest_distance{ 999999.9};
-		static LONG last_input_x{0};
-		static LONG last_input_y{0};
 
 		for (const auto entity : Globals::world->get_entities()) {
 
@@ -26,7 +24,7 @@ namespace Aimbot {
 
 			if (distance < closest_distance) {
 				closest_distance = distance;
-				closest_pos = entity->get_bone_pos("Head");
+				closest_pos = (entity->check_type()) ? entity->get_bone_pos("Head") : entity->get_pos();
 			}
 		}
 
@@ -54,7 +52,6 @@ namespace Aimbot {
 
 		SendInput(1, &input, sizeof(INPUT));
 
-		// by fps maybe get global fps from func and put here instead of 60?
 		Sleep(1000 / 60);
 	}
 }
