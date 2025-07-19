@@ -30,7 +30,7 @@ namespace Aimbot {
 			}
 		}
 
-		if (closest_distance == 999999.9) { return; }
+		if (closest_distance == 999999.9f) { return; }
 
 		const auto& mouse_pos{ get_mouse_pos() };
 
