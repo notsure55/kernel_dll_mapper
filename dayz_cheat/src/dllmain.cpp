@@ -40,6 +40,13 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
         if (GetAsyncKeyState(VK_XBUTTON2)) {
             Aimbot::run();
         }
+        Globals::world->get_entities();
+
+		if (!Globals::local_player) { std::println("Local_player not cached?"); continue; }
+		const auto health{ Enfusion::get_health(Globals::local_player, NULL, "Health") };
+		const auto max_health{ Enfusion::get_max_entity_value(Globals::local_player, NULL, "Health") };
+		println("HEALTH: {} / {} ", health, max_health);
+        
         Sleep(5);
     }
     

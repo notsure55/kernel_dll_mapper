@@ -22,11 +22,11 @@ namespace Enfusion {
 	using GetBoneIndex_t = ULONGLONG * (*)(Entity*);
 	ULONGLONG* get_bone_object(Entity* entity);
 
-	using GetHealth_t = ULONGLONG(*)(Entity*);
-	ULONGLONG get_health(Entity* entity);
+	using GetHealth_t = float(*)(Entity*, ULONGLONG, const char*);
+	float get_health(Entity* entity, ULONGLONG idk, const char* health);
 
-	using GetMaxHealth_t = ULONGLONG(*)(Entity*);
-	ULONGLONG get_max_health(Entity* entity);
+	using GetMaxEntityValue_t = float(*)(Entity*, ULONGLONG, const char*);
+	float get_max_entity_value(Entity* entity, ULONGLONG idk, const char* value_string);
 
 	using GetBonePos_t = void(*)(Entity*, int, float*);
 	void get_bone_pos(Entity* entity, int index, float* out);
@@ -45,4 +45,7 @@ namespace Enfusion {
 
 	using SetAngles_t = void (*)(StaticCamera*, float*);
 	void set_angles(StaticCamera* camera, float* angles);
+
+	using fill_out_0x188_t = void(*)(Entity*);
+	void fill_out_0x188(Entity* entity);
 }

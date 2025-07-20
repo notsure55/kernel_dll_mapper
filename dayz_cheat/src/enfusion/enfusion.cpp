@@ -8,15 +8,17 @@ namespace Enfusion {
 	GetScreenPos_t GetScreenPos_p{ nullptr };
 	GetBoneIndex_t GetBoneIndex_p{ nullptr };
 	GetHealth_t GetHealth_p{ nullptr };
-	GetMaxHealth_t GetMaxHealth_p{ nullptr };
+	GetMaxEntityValue_t GetMaxEntityValue_p{ nullptr };
 	GetBonePos_t GetBonePos_p{ nullptr };
 	GetBoneIndexByName_t GetBoneIndexByName_p{ nullptr };
 	LookAt_t LookAt_p{ nullptr };
 	GetCameraObject_t GetCameraObject_p{ nullptr };
 	GetLocalYawPitchRoll_t GetLocalYawPitchRoll_p{ nullptr };
 	SetAngles_t SetAngles_p{ nullptr };
+	fill_out_0x188_t fill_out_0x188_p{ nullptr };
 	
 	// caches api func pointers
+	// TODO: make these SIGS
 	void cache() {
 		const auto base{ cast_ptr(GetModuleHandle(nullptr)) };
 		GetPlayer_p = reinterpret_cast<GetPlayer_t>(base + 0x572F20);
@@ -25,13 +27,14 @@ namespace Enfusion {
 		GetScreenPos_p = reinterpret_cast<GetScreenPos_t>(base + 0x578660);
 		GetBoneIndex_p = reinterpret_cast<GetBoneIndex_t>(base + 0x433490);
 		GetHealth_p = reinterpret_cast<GetHealth_t>(base + 0x8ADEA0);
-		GetMaxHealth_p = reinterpret_cast<GetHealth_t>(base + 0x8ADF70);
+		GetMaxEntityValue_p = reinterpret_cast<GetMaxEntityValue_t>(base + 0x8ADF70);
 		GetBonePos_p = reinterpret_cast<GetBonePos_t>(base + 0x8AA040);
 		GetBoneIndexByName_p = reinterpret_cast<GetBoneIndexByName_t>(base + 0xC11F0);
 		LookAt_p = reinterpret_cast<LookAt_t>(base + 0x480FA0);
 		GetCameraObject_p = reinterpret_cast<GetCameraObject_t>(base + 0x4823B0);
 		GetLocalYawPitchRoll_p = reinterpret_cast<GetLocalYawPitchRoll_t>(base + 0x29C2D0);
 		SetAngles_p = reinterpret_cast<SetAngles_t>(base + 0x29C370);
+		fill_out_0x188_p = reinterpret_cast<fill_out_0x188_t>(base + 0x3F8AC0);
 	}
 
 	Player* get_player() {
@@ -60,12 +63,15 @@ namespace Enfusion {
 		return GetBoneIndex_p(entity);
 	}
 
-	ULONGLONG get_health(Entity* entity) {
-		return GetHealth_p(entity);
+	float get_health(Entity* entity, ULONGLONG idk, const char* health) {
+		if (reinterpret_cast<void*>(cast_ptr(entity) + 0x188) == nullptr) {
+			fill_out_0x188(entity);
+		}
+		return GetHealth_p(entity, idk, health);
 	}
 
-	ULONGLONG get_max_health(Entity* entity) {
-		return GetMaxHealth_p(entity);
+	float get_max_entity_value(Entity* entity, ULONGLONG idk, const char* value_string) {
+		return GetMaxEntityValue_p(entity, idk, value_string);
 	}
 
 	void get_bone_pos(Entity* entity, int index, float* out) {
@@ -90,5 +96,9 @@ namespace Enfusion {
 
 	void set_angles(StaticCamera* camera, float* angles) {
 		SetAngles_p(camera, angles);
+	}
+
+	void fill_out_0x188(Entity* entity) {
+		fill_out_0x188_p(entity);
 	}
 }

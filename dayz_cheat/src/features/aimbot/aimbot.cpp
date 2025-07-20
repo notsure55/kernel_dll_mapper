@@ -6,11 +6,15 @@
 
 namespace Aimbot {
 
-	ImVec2 get_mouse_pos() {
+	glm::vec3 get_mouse_pos() {
 		ImGuiIO& io{ ImGui::GetIO() };
 		ImVec2 screen_size{ io.DisplaySize };
-		ImVec2 mouse_pos{ screen_size.x / 2.0f, screen_size.y / 2.0f };
+		glm::vec3 mouse_pos{ screen_size.x / 2.0f, screen_size.y / 2.0f, 0.0f };
 		return mouse_pos;
+	}
+
+	void get_distance() {
+
 	}
 	
 	void run() {
@@ -19,27 +23,29 @@ namespace Aimbot {
 
 		for (const auto entity : Globals::world->get_entities()) {
 
-			const auto difference = Globals::local_player->get_pos() - entity->get_pos();
-			const auto distance = difference.x * difference.x + difference.y * difference.y + difference.z * difference.z;
+			const auto& mouse_pos{ get_mouse_pos() };
+
+			auto entity_pos{ (entity->check_type()) ? entity->get_bone_pos("Head") : entity->get_pos() };
+
+			glm::vec3 pos{};
+			if (!Enfusion::get_screen_pos(NULL, &pos.x, &entity_pos.x)) {
+				return;
+			}
+
+			const auto difference = pos - mouse_pos;
+			const auto distance = abs(difference.x) + abs(difference.y);
 
 			if (distance < closest_distance) {
 				closest_distance = distance;
-				closest_pos = (entity->check_type()) ? entity->get_bone_pos("Head") : entity->get_pos();
+				closest_pos = difference;
 			}
 		}
 
 		if (closest_distance == 999999.9f) { return; }
 
-		const auto& mouse_pos{ get_mouse_pos() };
-
-		glm::vec3 pos{};
-		if (!Enfusion::get_screen_pos(NULL, &pos.x, &closest_pos.x)) {
-			return;
-		}
-
 		float smooth = 0.2f; // smooth so doesnt go buck wild on a nga
-		LONG dx = static_cast<LONG>((pos.x - mouse_pos.x) * smooth);
-		LONG dy = static_cast<LONG>((pos.y - mouse_pos.y) * smooth);
+		LONG dx = static_cast<LONG>((closest_pos.x) * smooth);
+		LONG dy = static_cast<LONG>((closest_pos.y) * smooth);
 
 		INPUT input = {
 			.type = INPUT_MOUSE,

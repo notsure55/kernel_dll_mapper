@@ -4,7 +4,6 @@
 #include "../ui/toggles/toggles.hpp"
 
 std::vector<Entity*> World::get_items() {
-    std::println("START");
     std::vector<Entity*> items;
     const auto start{ reinterpret_cast<DWORD_PTR>(this->item_list) };
     size_t count{ 0 };
@@ -13,7 +12,6 @@ std::vector<Entity*> World::get_items() {
         const auto in_render{ *reinterpret_cast<UINT8*>(start + 0x4 * count) };
         if (in_render == (UINT8)1) {
             const auto entity_value{ *reinterpret_cast<ULONGLONG*>(start + 0x4 * count + 0x8) };
-            std::print("{:X} {} VALUE: {:X} ", start + 0x4 * count + 0x8, items.size(), entity_value);
             if (entity_value != NULL && entity_value > 0x1FFFFFFFF && entity_value < 0xFFFFFFFFF) {
                 const auto item{ reinterpret_cast<Entity*>(entity_value) };
                 if (item == nullptr) { count++; continue; };
@@ -24,7 +22,6 @@ std::vector<Entity*> World::get_items() {
                 items.push_back(item);
                 count += 5;
             }
-            std::println();
         }
         else if (in_render == (UINT8)2) {
             // not in render
@@ -44,7 +41,8 @@ std::vector<Entity*> World::get_entities() {
         if (this->entity_list[i]->cls == nullptr) continue;
         if (this->entity_list[i]->cls->name == nullptr) continue;
         if (this->entity_list[i]->get_type() == Type::INVALID) continue;
-        if (i == 0) {
+
+        if (strncmp(this->entity_list[i]->cls->name, "SurvivorBase", 12) == 0) {
             Globals::local_player = this->entity_list[i];
         }
         else {
@@ -73,10 +71,9 @@ void World::print_entities() {
     }
     std::println("**** DYNAMIC ENTITIES ****");
     for (const auto ent : entities) {
-        if (strcmp(ent->cls->name, "SurvivorBase") == 0) {
-        }
         std::println("{:X}, {}", cast_ptr(ent), ent->cls->name);
     }
+    std::println("{:X}", cast_ptr(Globals::local_player));
 }
 
 Type Entity::get_type() const {
