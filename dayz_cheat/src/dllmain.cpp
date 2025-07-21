@@ -41,14 +41,6 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
         if (GetAsyncKeyState(VK_XBUTTON2)) {
             Aimbot::run();
         }
-
-        if (!Globals::local_player) { std::println("Local_player not cached?"); Sleep(500);  continue; }
-
-        /*Globals::world->print_entities();
-
-        for (const auto entity : Globals::local_player->get_inv()->get_equipment()) {
-            println("{:X}", cast_ptr(entity));
-        }*/
         
         Sleep(5);
     }

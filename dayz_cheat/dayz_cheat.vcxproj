@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\classes\entity\entity.cpp" />
     <ClCompile Include="src\features\aimbot\aimbot.cpp" />
     <ClCompile Include="src\offsets\offsets.cpp" />
     <ClCompile Include="src\globals\globals.cpp" />
@@ -171,8 +172,10 @@
     <ClCompile Include="src\utility\utility.cpp" />
     <ClCompile Include="vcpkg_installed\x64-windows\x64-windows\include\glm\detail\glm.cpp" />
     <ClCompile Include="vcpkg_installed\x64-windows\x64-windows\include\glm\glm.cppm" />
+    <ClCompile Include="src\classes\world\world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\classes\entity\entity.hpp" />
     <ClInclude Include="src\features\aimbot\aimbot.hpp" />
     <ClInclude Include="src\offsets\offsets.hpp" />
     <ClInclude Include="src\globals\globals.hpp" />
@@ -482,6 +485,7 @@
     <ClInclude Include="vcpkg_installed\x64-windows\x64-windows\include\glm\vec3.hpp" />
     <ClInclude Include="vcpkg_installed\x64-windows\x64-windows\include\glm\vec4.hpp" />
     <ClInclude Include="vcpkg_installed\x64-windows\x64-windows\include\glm\vector_relational.hpp" />
+    <ClInclude Include="src\classes\world\world.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg-configuration.json" />
