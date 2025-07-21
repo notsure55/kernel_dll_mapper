@@ -44,11 +44,11 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
 
         if (!Globals::local_player) { std::println("Local_player not cached?"); Sleep(500);  continue; }
 
-		println("ADDRESS: {:X} HAND: {:X}", cast_ptr(Globals::local_player), cast_ptr(Globals::local_player->get_inv()->get_in_hand()));
+        /*Globals::world->print_entities();
 
         for (const auto entity : Globals::local_player->get_inv()->get_equipment()) {
             println("{:X}", cast_ptr(entity));
-        }
+        }*/
         
         Sleep(5);
     }

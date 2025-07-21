@@ -38,13 +38,14 @@ std::vector<Entity*> World::get_entities() {
     std::vector<Entity*> entities;
     Globals::local_player = Enfusion::get_player();
     for (size_t i{ 0 }; i < this->entity_count; ++i) {
-        if (this->entity_list[i] == nullptr) continue;
-        if (this->entity_list[i]->cls == nullptr) continue;
-        if (this->entity_list[i]->cls->name == nullptr) continue;
-        if (this->entity_list[i]->get_type() == Type::INVALID) continue;
-        if (this->entity_list[i] == Globals::local_player) { continue; }
+        const auto entity{ this->entity_list[i] };
+        if (entity == nullptr) continue;
+        if (entity->cls == nullptr) continue;
+        if (entity->cls->name == nullptr) continue;
+        if (entity->get_type() == Type::INVALID) continue;
+        if (entity == Globals::local_player) { continue; }
 
-		entities.push_back(this->entity_list[i]);
+		entities.push_back(entity);
     }
 
     return entities;
@@ -80,11 +81,22 @@ Type Entity::get_type() const {
         return Type::INVALID;
     }
 
+    if (this->cls->name != nullptr) {
+        if (strncmp(this->cls->name, "SurvivorBase", 12) == 0) {
+            return Type::PLAYER;
+        }
+    }
+
     if (strstr(type, "gear") != nullptr) {
         return Type::GEAR;
     }
     else if (strstr(type, "characters") != nullptr) {
-        return Type::CLOTHING;
+        if (strstr(type, "zombie") != nullptr) {
+            return Type::ZOMBIE;
+        }
+        else {
+            return Type::CLOTHING;
+        }
     }
     else if (strstr(type, "weapons") != nullptr) {
         return Type::WEAPONS;
@@ -139,10 +151,10 @@ bool Entity::check_type() {
     if (!Toggles::Esp::def && type == Type::DEFAULT) {
         return false;
     }
-    if (type == Type::INVALID) {
+    if (!Toggles::Esp::animals && type == Type::ANIMAL) {
         return false;
     }
-    if (!Toggles::Esp::animals&& type == Type::ANIMAL) {
+    if (type == Type::INVALID) {
         return false;
     }
 

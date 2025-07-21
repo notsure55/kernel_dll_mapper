@@ -20,6 +20,9 @@ namespace Menu {
             }
             if (ImGui::BeginTabItem("Aimbot")) {
                 ImGui::SliderFloat("Smooth", &Toggles::Aimbot::smooth, 0.01f, 0.4f);
+                ImGui::Checkbox("Animals", &Toggles::Aimbot::prefer_animals);
+                ImGui::Checkbox("Players", &Toggles::Aimbot::prefer_players);
+                ImGui::Checkbox("Zombies", &Toggles::Aimbot::prefer_zombies);
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

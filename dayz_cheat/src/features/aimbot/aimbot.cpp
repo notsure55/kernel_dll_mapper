@@ -14,19 +14,40 @@ namespace Aimbot {
 		return mouse_pos;
 	}
 
-	void get_distance() {
+	glm::vec3 calc_pos(Entity* entity) {
+		const auto type{ entity->get_type() };
+		if (type == Type::PLAYER || type == Type::ANIMAL || type == Type::ZOMBIE) {
+			return entity->get_bone_pos("Head");
+		}
+		else {
+			return entity->get_pos();
+		}
+	}
 
+	bool prefered(Type type) {
+		if (!Toggles::Aimbot::prefer_animals && type == Type::ANIMAL) {
+			return false;
+		}
+		if (!Toggles::Aimbot::prefer_zombies && type == Type::ZOMBIE) {
+			return false;
+		}
+		if (!Toggles::Aimbot::prefer_players && type == Type::PLAYER) {
+			return false;
+		}
+
+		return true;
 	}
 	
 	void run() {
 		glm::vec3 closest_pos{};
 		float closest_distance{ 999999.9f };
+		Type type = Type::INVALID;
 
 		for (const auto entity : Globals::world->get_entities()) {
 
 			const auto mouse_pos{ get_mouse_pos() };
-
-			auto entity_pos{ entity->get_bone_pos("Head") };
+			// get_bone_pos("Head")
+			auto entity_pos{ calc_pos(entity) };
 
 			glm::vec3 pos{};
 			if (!Enfusion::get_screen_pos(NULL, &pos.x, &entity_pos.x)) {
@@ -36,9 +57,10 @@ namespace Aimbot {
 			const auto difference = pos - mouse_pos;
 			const auto distance = abs(difference.x) + abs(difference.y);
 
-			if (distance < closest_distance) {
+			if (distance < closest_distance || prefered(entity->get_type()) && entity->get_type() != type) {
 				closest_distance = distance;
 				closest_pos = difference;
+				type = entity->get_type();
 			}
 		}
 

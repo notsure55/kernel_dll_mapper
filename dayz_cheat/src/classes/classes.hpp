@@ -43,6 +43,8 @@ enum Type : UINT32 {
     ANIMAL = 5, // animals
     VEHICLE = 6, // land vehicles
     BOAT = 7, // water vehicles
+    PLAYER = 8,
+    ZOMBIE = 9,
     INVALID = 999,
 };
 

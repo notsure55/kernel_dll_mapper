@@ -11,5 +11,8 @@ namespace Toggles {
 	}
 	namespace Aimbot {
 		float smooth{ 0.2f };
+		bool prefer_zombies{false};
+		bool prefer_animals{false};
+		bool prefer_players{false};
 	}
 }
