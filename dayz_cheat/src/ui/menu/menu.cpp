@@ -15,6 +15,11 @@ namespace Menu {
                 ImGui::Checkbox("Gear", &Toggles::Esp::gear);
                 ImGui::Checkbox("Clothing", &Toggles::Esp::clothing);
                 ImGui::Checkbox("Default", &Toggles::Esp::def);
+                ImGui::Checkbox("Animals", &Toggles::Esp::animals);
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Aimbot")) {
+                ImGui::SliderFloat("Smooth", &Toggles::Aimbot::smooth, 0.01f, 0.4f);
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

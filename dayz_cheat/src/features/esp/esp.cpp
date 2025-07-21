@@ -34,9 +34,23 @@ namespace Esp {
         }
     }
 
+    void inventory_esp() {
+        //ImGui::GetBackgroundDrawList()->AddImage();
+    }
+
+    bool invalid_skeletons(Type type) {
+        if (type == Type::ANIMAL || type == Type::BOAT || type == Type::VEHICLE) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     void skeletons() {
         for (const auto entity : Globals::world->get_entities()) {
             if (!entity->check_type()) { continue; };
+            if (invalid_skeletons(entity->get_type())) { continue; };
             for (size_t i{ 0 }; i < std::size(Constants::BONE_ARRAY) - 1; ++i) {
                 ImVec2 p1{};
                 if (!get_bone_pos_by_i(entity, i, p1)) { continue; }

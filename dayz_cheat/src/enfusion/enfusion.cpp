@@ -8,7 +8,7 @@ namespace Enfusion {
 	GetScreenPos_t GetScreenPos_p{ nullptr };
 	GetBoneIndex_t GetBoneIndex_p{ nullptr };
 	GetHealth_t GetHealth_p{ nullptr };
-	GetMaxEntityValue_t GetMaxEntityValue_p{ nullptr };
+	GetHealth_t GetMaxEntityValue_p{ nullptr };
 	GetBonePos_t GetBonePos_p{ nullptr };
 	GetBoneIndexByName_t GetBoneIndexByName_p{ nullptr };
 	LookAt_t LookAt_p{ nullptr };
@@ -27,7 +27,7 @@ namespace Enfusion {
 		GetScreenPos_p = reinterpret_cast<GetScreenPos_t>(base + 0x578660);
 		GetBoneIndex_p = reinterpret_cast<GetBoneIndex_t>(base + 0x433490);
 		GetHealth_p = reinterpret_cast<GetHealth_t>(base + 0x8ADEA0);
-		GetMaxEntityValue_p = reinterpret_cast<GetMaxEntityValue_t>(base + 0x8ADF70);
+		GetMaxEntityValue_p = reinterpret_cast<GetHealth_t>(base + 0x8ADF70);
 		GetBonePos_p = reinterpret_cast<GetBonePos_t>(base + 0x8AA040);
 		GetBoneIndexByName_p = reinterpret_cast<GetBoneIndexByName_t>(base + 0xC11F0);
 		LookAt_p = reinterpret_cast<LookAt_t>(base + 0x480FA0);
@@ -37,7 +37,7 @@ namespace Enfusion {
 		fill_out_0x188_p = reinterpret_cast<fill_out_0x188_t>(base + 0x3F8AC0);
 	}
 
-	Player* get_player() {
+	Entity* get_player() {
 		return GetPlayer_p();
 	}
 
@@ -63,15 +63,15 @@ namespace Enfusion {
 		return GetBoneIndex_p(entity);
 	}
 
-	float get_health(Entity* entity, ULONGLONG idk, const char* health) {
+	float get_health(Entity* entity, const char* first_string, const char* second_string) {
 		if (reinterpret_cast<void*>(cast_ptr(entity) + 0x188) == nullptr) {
-			fill_out_0x188(entity);
 		}
-		return GetHealth_p(entity, idk, health);
+		fill_out_0x188(entity);
+		return GetHealth_p(entity, first_string, second_string);
 	}
 
-	float get_max_entity_value(Entity* entity, ULONGLONG idk, const char* value_string) {
-		return GetMaxEntityValue_p(entity, idk, value_string);
+	float get_max_entity_value(Entity* entity, const char* first_string, const char* second_string) {
+		return GetMaxEntityValue_p(entity, first_string, second_string);
 	}
 
 	void get_bone_pos(Entity* entity, int index, float* out) {

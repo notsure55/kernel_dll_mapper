@@ -3,6 +3,7 @@
 #include "../../globals/globals.hpp"
 #include <Windows.h>
 #include <imgui.h>
+#include "../../ui/toggles/toggles.hpp"
 
 namespace Aimbot {
 
@@ -19,17 +20,17 @@ namespace Aimbot {
 	
 	void run() {
 		glm::vec3 closest_pos{};
-		float closest_distance{ 999999.9};
+		float closest_distance{ 999999.9f };
 
 		for (const auto entity : Globals::world->get_entities()) {
 
-			const auto& mouse_pos{ get_mouse_pos() };
+			const auto mouse_pos{ get_mouse_pos() };
 
-			auto entity_pos{ (entity->check_type()) ? entity->get_bone_pos("Head") : entity->get_pos() };
+			auto entity_pos{ entity->get_bone_pos("Head") };
 
 			glm::vec3 pos{};
 			if (!Enfusion::get_screen_pos(NULL, &pos.x, &entity_pos.x)) {
-				return;
+				continue;
 			}
 
 			const auto difference = pos - mouse_pos;
@@ -43,9 +44,8 @@ namespace Aimbot {
 
 		if (closest_distance == 999999.9f) { return; }
 
-		float smooth = 0.2f; // smooth so doesnt go buck wild on a nga
-		LONG dx = static_cast<LONG>((closest_pos.x) * smooth);
-		LONG dy = static_cast<LONG>((closest_pos.y) * smooth);
+		LONG dx = static_cast<LONG>((closest_pos.x) * Toggles::Aimbot::smooth);
+		LONG dy = static_cast<LONG>((closest_pos.y) * Toggles::Aimbot::smooth);
 
 		INPUT input = {
 			.type = INPUT_MOUSE,

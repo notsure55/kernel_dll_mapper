@@ -7,5 +7,9 @@ namespace Toggles {
 		extern bool clothing;
 		extern bool gear;
 		extern bool def;
+		extern bool animals;
+	}
+	namespace Aimbot {
+		extern float smooth;
 	}
 }

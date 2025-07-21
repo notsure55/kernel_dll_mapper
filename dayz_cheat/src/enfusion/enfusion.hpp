@@ -7,8 +7,8 @@ namespace Enfusion {
 	void cache();
 
 	// functions
-	using GetPlayer_t = Player * (*)();
-	Player* get_player();
+	using GetPlayer_t = Entity* (*)();
+	Entity* get_player();
 
 	using FindEntityById_t = Entity * (*)(LONGLONG, int);
 	Entity* find_ent_by_id(int id);
@@ -22,11 +22,9 @@ namespace Enfusion {
 	using GetBoneIndex_t = ULONGLONG * (*)(Entity*);
 	ULONGLONG* get_bone_object(Entity* entity);
 
-	using GetHealth_t = float(*)(Entity*, ULONGLONG, const char*);
-	float get_health(Entity* entity, ULONGLONG idk, const char* health);
-
-	using GetMaxEntityValue_t = float(*)(Entity*, ULONGLONG, const char*);
-	float get_max_entity_value(Entity* entity, ULONGLONG idk, const char* value_string);
+	using GetHealth_t = float(*)(Entity*, const char*, const char*);
+	float get_health(Entity* entity, const char* first_string, const char* second_string);
+    float get_max_entity_value(Entity* entity, const char* first_string, const char* second_string);
 
 	using GetBonePos_t = void(*)(Entity*, int, float*);
 	void get_bone_pos(Entity* entity, int index, float* out);

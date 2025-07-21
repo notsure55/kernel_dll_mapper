@@ -41,18 +41,60 @@ enum Type : UINT32 {
     WEAPONS = 3, // weapons
     DEFAULT = 4,
     ANIMAL = 5, // animals
-
+    VEHICLE = 6, // land vehicles
+    BOAT = 7, // water vehicles
     INVALID = 999,
+};
+
+class Entity;
+
+class EntityInventory {
+private:
+    byte padding[0x150];
+    void* equipment;
+    byte padding1[0x8];
+    void* body_parts;
+    byte padding2[0x48];
+    Entity* in_hands;
+public:
+
+    std::vector<Entity*> get_equipment() {
+        const auto inventory_start{ *reinterpret_cast<DWORD_PTR*>(
+            *reinterpret_cast<DWORD_PTR*>(this) + 0x150) + 0x8 };
+
+        std::vector<Entity*> equipment;
+
+        for (size_t i{ 0 }; i < 16; ++i) {
+            const auto entity{ *reinterpret_cast<Entity**>(inventory_start + 0x10 * i) };
+            if (entity != nullptr) {
+                equipment.push_back(entity);
+            }
+            else {
+                break;
+            }
+        }
+
+        return equipment;
+    }
+
+    Entity* get_in_hand() {
+        const auto in_hand{ *reinterpret_cast<Entity**>(
+              *reinterpret_cast<DWORD_PTR*>(this) + 0x1B0) };
+
+        return in_hand;
+    }
 };
 
 class Entity {
 public:
-    byte padding[0x8];
+    void** vtable;
     EntityClass* cls; // 0x8
     byte padding2[0x170];
     EntityType* type; // 0x180
     byte padding1[0x48];
     EntityVisualState* vis_state; // 0x1C8
+    byte padding[0x488];
+    EntityInventory* inventory;
     // 1D0
 
     Type get_type() const;
@@ -62,6 +104,10 @@ public:
     glm::vec3& get_pos() const;
 
     glm::vec3 get_bone_pos(const char* name);
+
+    EntityInventory* get_inv() const {
+        return reinterpret_cast<EntityInventory*>(cast_ptr(this) + 0x658);
+    }
 };
 
 struct Mat4x4 {

@@ -36,18 +36,15 @@ std::vector<Entity*> World::get_items() {
 
 std::vector<Entity*> World::get_entities() {
     std::vector<Entity*> entities;
+    Globals::local_player = Enfusion::get_player();
     for (size_t i{ 0 }; i < this->entity_count; ++i) {
         if (this->entity_list[i] == nullptr) continue;
         if (this->entity_list[i]->cls == nullptr) continue;
         if (this->entity_list[i]->cls->name == nullptr) continue;
         if (this->entity_list[i]->get_type() == Type::INVALID) continue;
+        if (this->entity_list[i] == Globals::local_player) { continue; }
 
-        if (strncmp(this->entity_list[i]->cls->name, "SurvivorBase", 12) == 0) {
-            Globals::local_player = this->entity_list[i];
-        }
-        else {
-            entities.push_back(this->entity_list[i]);
-        }
+		entities.push_back(this->entity_list[i]);
     }
 
     return entities;
@@ -95,6 +92,14 @@ Type Entity::get_type() const {
     else if (strstr(type, "animals") != nullptr) {
         return Type::ANIMAL;
     }
+    else if (strstr(type, "vehicles") != nullptr) {
+        if (strstr(type, "water") != nullptr) {
+            return Type::BOAT;
+        }
+        else {
+            return Type::VEHICLE;
+        }
+    }
     else {
         return Type::DEFAULT;
     }
@@ -137,7 +142,7 @@ bool Entity::check_type() {
     if (type == Type::INVALID) {
         return false;
     }
-    if (type == Type::ANIMAL) {
+    if (!Toggles::Esp::animals&& type == Type::ANIMAL) {
         return false;
     }
 

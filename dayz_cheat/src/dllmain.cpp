@@ -28,6 +28,7 @@ void cleanup(const LPVOID hModule, FILE* f) {
     FreeLibraryAndExitThread(static_cast<HMODULE>(hModule), 0);
 }
 
+
 DWORD WINAPI entry_point(const LPVOID hModule) {
 
     AllocConsole();
@@ -40,12 +41,14 @@ DWORD WINAPI entry_point(const LPVOID hModule) {
         if (GetAsyncKeyState(VK_XBUTTON2)) {
             Aimbot::run();
         }
-        Globals::world->get_entities();
 
-		if (!Globals::local_player) { std::println("Local_player not cached?"); continue; }
-		const auto health{ Enfusion::get_health(Globals::local_player, NULL, "Health") };
-		const auto max_health{ Enfusion::get_max_entity_value(Globals::local_player, NULL, "Health") };
-		println("HEALTH: {} / {} ", health, max_health);
+        if (!Globals::local_player) { std::println("Local_player not cached?"); Sleep(500);  continue; }
+
+		println("ADDRESS: {:X} HAND: {:X}", cast_ptr(Globals::local_player), cast_ptr(Globals::local_player->get_inv()->get_in_hand()));
+
+        for (const auto entity : Globals::local_player->get_inv()->get_equipment()) {
+            println("{:X}", cast_ptr(entity));
+        }
         
         Sleep(5);
     }

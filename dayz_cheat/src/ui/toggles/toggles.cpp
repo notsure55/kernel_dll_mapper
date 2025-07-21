@@ -7,5 +7,9 @@ namespace Toggles {
 		bool clothing{true};
 		bool gear{true};
 		bool def{true};
+		bool animals{ true };
+	}
+	namespace Aimbot {
+		float smooth{ 0.2f };
 	}
 }

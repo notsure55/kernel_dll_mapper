@@ -163,8 +163,6 @@ namespace Present {
 
     void setup() {
 
-        std::println("in present setup!");
-
         init();
 
         if (!pDirectPresent) {
