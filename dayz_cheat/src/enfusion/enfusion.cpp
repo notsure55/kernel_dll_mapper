@@ -1,4 +1,5 @@
 #include "enfusion.hpp"
+#include "../sig_scanner/sig_scanner.hpp"
 #define cast_ptr(ptr) reinterpret_cast<DWORD_PTR>(ptr)
 
 namespace Enfusion {
@@ -11,10 +12,10 @@ namespace Enfusion {
 	// TODO: make these SIGS
 	void cache() {
 		const auto base{ cast_ptr(GetModuleHandle(nullptr)) };
-		GetPlayer_p = reinterpret_cast<GetPlayer_t>(base + 0x572F20);
-		GetScreenPos_p = reinterpret_cast<GetScreenPos_t>(base + 0x578660);
-		GetBonePos_p = reinterpret_cast<GetBonePos_t>(base + 0x8AA040);
-		GetBoneIndexByName_p = reinterpret_cast<GetBoneIndexByName_t>(base + 0xC11F0);
+		GetPlayer_p = Scanner::get<GetPlayer_t>("GetPlayer");
+		GetScreenPos_p = Scanner::get<GetScreenPos_t>("GetScreenPos");
+		GetBonePos_p = Scanner::get<GetBonePos_t>("GetBonePos");
+		GetBoneIndexByName_p = Scanner::get<GetBoneIndexByName_t>("GetBoneIndexByName");
 	}
 
 	Entity* get_player() {
